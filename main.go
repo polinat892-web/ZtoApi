@@ -1429,21 +1429,24 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	// 选择本次对话使用的token
-	authToken := ZAI_TOKEN
-	if ANON_TOKEN_ENABLED {
-		if t, err := getAnonymousToken(); err == nil {
-			authToken = t
-			debugLog("匿名token获取成功: %s...", func() string {
-				if len(t) > 10 {
-					return t[:10]
-				}
-				return t
-			}())
-		} else {
-			debugLog("匿名token获取失败，回退固定token: %v", err)
-		}
-	}
+	// 选择本次对话使用的token - ПРИНУДИТЕЛЬНО ИСПОЛЬЗУЕМ ZAI_TOKEN
+authToken := ZAI_TOKEN
+if authToken == "" {
+    debugLog("ZAI_TOKEN не предоставлен, пробуем анонимный токен")
+    if ANON_TOKEN_ENABLED {
+        if t, err := getAnonymousToken(); err == nil {
+            authToken = t
+            debugLog("匿名token获取成功: %s...", func() string {
+                if len(t) > 10 {
+                    return t[:10]
+                }
+                return t
+            }())
+        } else {
+            debugLog("匿名token获取失败: %v", err)
+        }
+    }
+}
 
 	// 调用上游API
 	if req.Stream {
