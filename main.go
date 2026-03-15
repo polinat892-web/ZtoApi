@@ -72,7 +72,7 @@ const (
 )
 
 // 匿名token开关
-const ANON_TOKEN_ENABLED = true
+const ANON_TOKEN_ENABLED = false
 
 // 从环境变量初始化配置
 func initConfig() {
