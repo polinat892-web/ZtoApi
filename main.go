@@ -1328,6 +1328,7 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 
 	debugLog("收到chat completions请求")
 
+	/*
 	// 验证API Key
 	authHeader := r.Header.Get("Authorization")
 	if !strings.HasPrefix(authHeader, "Bearer ") {
@@ -1352,6 +1353,7 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	debugLog("API key验证通过")
+	*/
 
 	// 读取请求体
 	body, err := io.ReadAll(r.Body)
