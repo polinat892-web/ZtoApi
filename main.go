@@ -72,7 +72,7 @@ const (
 )
 
 // 匿名token开关
-const ANON_TOKEN_ENABLED = false
+const ANON_TOKEN_ENABLED = true
 
 // 从环境变量初始化配置
 func initConfig() {
@@ -1319,8 +1319,7 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	clientIP := getClientIP(r)
 	userAgent := r.UserAgent()
-	debugLog("ZAI_TOKEN из окружения: %s", os.Getenv("ZAI_TOKEN"))
-	debugLog("ANON_TOKEN_ENABLED из окружения: %s", os.Getenv("ANON_TOKEN_ENABLED"))
+
 
 	setCORSHeaders(w)
 	if r.Method == "OPTIONS" {
@@ -1330,7 +1329,7 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 
 	debugLog("收到chat completions请求")
 
-	/*
+	
 	// 验证API Key
 	authHeader := r.Header.Get("Authorization")
 	if !strings.HasPrefix(authHeader, "Bearer ") {
@@ -1355,7 +1354,7 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	debugLog("API key验证通过")
-	*/
+	
 
 	// 读取请求体
 	body, err := io.ReadAll(r.Body)
@@ -1431,22 +1430,19 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	// 选择本次对话使用的token - ПРИНУДИТЕЛЬНО ИСПОЛЬЗУЕМ ZAI_TOKEN
+	// 选择本次对话使用的token
 authToken := ZAI_TOKEN
-if authToken == "" {
-    debugLog("ZAI_TOKEN не предоставлен, пробуем анонимный токен")
-    if ANON_TOKEN_ENABLED {
-        if t, err := getAnonymousToken(); err == nil {
-            authToken = t
-            debugLog("匿名token获取成功: %s...", func() string {
-                if len(t) > 10 {
-                    return t[:10]
-                }
-                return t
-            }())
-        } else {
-            debugLog("匿名token获取失败: %v", err)
-        }
+if ANON_TOKEN_ENABLED {
+    if t, err := getAnonymousToken(); err == nil {
+        authToken = t
+        debugLog("匿名token获取成功: %s...", func() string {
+            if len(t) > 10 {
+                return t[:10]
+            }
+            return t
+        }())
+    } else {
+        debugLog("匿名token获取失败，回退固定token: %v", err)
     }
 }
 
