@@ -1319,6 +1319,8 @@ func handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	clientIP := getClientIP(r)
 	userAgent := r.UserAgent()
+	debugLog("ZAI_TOKEN из окружения: %s", os.Getenv("ZAI_TOKEN"))
+	debugLog("ANON_TOKEN_ENABLED из окружения: %s", os.Getenv("ANON_TOKEN_ENABLED"))
 
 	setCORSHeaders(w)
 	if r.Method == "OPTIONS" {
